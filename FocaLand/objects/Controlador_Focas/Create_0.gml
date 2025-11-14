@@ -8,8 +8,8 @@ for (var i = 0; i < cantidad_focas; i++) {
 
     // Crear una foca aleatoria (entre los dos tipos)
     if (irandom(1) == 0) {
-        instance_create_layer(pos_x, pos_y, "Instances", Foca1_Left);
+        instance_create_layer(pos_x, pos_y, "Instances", Foca1);
     } else {
-        instance_create_layer(pos_x, pos_y, "Instances", Foca2_Left);
+        instance_create_layer(pos_x, pos_y, "Instances", Foca2);
     }
 }

@@ -1,12 +1,13 @@
 {
   "$GMObject":"",
-  "%Name":"Foca1_Left",
+  "%Name":"Foca1",
   "eventList":[
     {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":3,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
     {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":0,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
+    {"$GMEvent":"v1","%Name":"","collisionObjectId":{"name":"Foca2","path":"objects/Foca2/Foca2.yy",},"eventNum":0,"eventType":4,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
   ],
   "managed":true,
-  "name":"Foca1_Left",
+  "name":"Foca1",
   "overriddenProperties":[],
   "parent":{
     "name":"Objetos",
@@ -31,8 +32,8 @@
   "resourceVersion":"2.0",
   "solid":false,
   "spriteId":{
-    "name":"Foca1_L",
-    "path":"sprites/Foca1_L/Foca1_L.yy",
+    "name":"Foca1_R",
+    "path":"sprites/Foca1_R/Foca1_R.yy",
   },
   "spriteMaskId":null,
   "visible":true,
