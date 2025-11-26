@@ -1,3 +1,3 @@
-// Cambiar dirección suavemente
-direction = irandom(359);
-alarm[0] = room_speed * 3;
+/// @description Cambiar rumbo
+dir_movimiento = irandom(359);
+alarm[0] = irandom_range(60, 180);
