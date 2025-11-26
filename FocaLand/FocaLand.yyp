@@ -49,6 +49,8 @@
     {"id":{"name":"Room_Play","path":"sprites/Room_Play/Room_Play.yy",},},
     {"id":{"name":"Sprite7","path":"sprites/Sprite7/Sprite7.yy",},},
     {"id":{"name":"TileSnow","path":"sprites/TileSnow/TileSnow.yy",},},
+    {"id":{"name":"TileWater","path":"sprites/TileWater/TileWater.yy",},},
+    {"id":{"name":"TileSet2","path":"tilesets/TileSet2/TileSet2.yy",},},
     {"id":{"name":"TilesSnow","path":"tilesets/TilesSnow/TilesSnow.yy",},},
   ],
   "resourceType":"GMProject",
