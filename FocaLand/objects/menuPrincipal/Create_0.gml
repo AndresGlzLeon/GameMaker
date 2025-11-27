@@ -15,5 +15,5 @@ var existe_save = file_exists("savegame.ini");
     if (existe_save) {
         opciones = ["Jugar", "Cargar Partida", "Salir"];
     } else {
-        opciones = ["Jugar", "Idioma: ESP", "Salir"];
+        opciones = ["Jugar", "Salir"];
     }

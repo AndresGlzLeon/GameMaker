@@ -1,7 +1,7 @@
 /// @description GENERAR FOCAS (INTELIGENTE)
 
 // 1. CONFIGURACIÓN POR DEFECTO (Partida Nueva)
-var cantidad_focas = 20; 
+var cantidad_focas = 50; 
 
 // 2. REVISAR SI ESTAMOS CARGANDO PARTIDA
 if (variable_global_exists("modo_carga") && global.modo_carga == true) {
