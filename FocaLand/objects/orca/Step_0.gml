@@ -123,4 +123,21 @@ if (tilemap_get_at_pixel(global.tilemap_nieve, x, y) > 0) {
         dir_movimiento = dir_afuera; // Mirar hacia el mar
     }
 }
+
+// ... (Aquí terminan tus estados) ...
+
+// =========================================================
+//        SISTEMA DE SEGURIDAD (ANTI-FUGA)
+// =========================================================
+
+// 1. Forzar posición dentro del mapa (con margen de 50px)
+x = clamp(x, 50, room_width - 50);
+y = clamp(y, 50, room_height - 50);
+
+// 2. Si tocan el borde, girar hacia el centro
+if (x <= 50 || x >= room_width - 50 || y <= 50 || y >= room_height - 50) {
+    dir_movimiento = point_direction(x, y, room_width/2, room_height/2);
+    // Un pequeño empujón aleatorio para que no se vean robóticas
+    dir_movimiento += irandom_range(-20, 20);
+}
 }

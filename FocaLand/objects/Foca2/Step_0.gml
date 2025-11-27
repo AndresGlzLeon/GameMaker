@@ -62,8 +62,14 @@ if (estado == "PASEAR") {
     
     if (choco) dir_movimiento = irandom(359);
     
-    x += _dx;
-    y += _dy;
+// Movimiento con Colisión de Iglús
+    // Solo me muevo si NO hay un iglú en el punto destino
+    if (!place_meeting(x + _dx, y, obj_Igloo)) {
+        x += _dx;
+    }
+    if (!place_meeting(x, y + _dy, obj_Igloo)) {
+        y += _dy;
+    }
     
     if (_dx != 0) image_xscale = sign(_dx);
 }
@@ -130,20 +136,35 @@ else if (estado == "PERSEGUIR") {
 }
 
 // =========================================================
-//                  ESTADO: REGRESAR (Retorno)
+//                  ESTADO: REGRESAR (Con Red de Seguridad)
 // =========================================================
 else if (estado == "REGRESAR") {
+    
+    // --- RED DE SEGURIDAD (FIX) ---
+    // Si ya estoy muy cerca del centro (radio de 200px),
+    // asumo que estoy en la nieve y termino la misión.
+    if (point_distance(x, y, room_width/2, room_height/2) < 200) {
+        estado = "PASEAR";
+        hambre = 0;
+        cooldown_susto = 0; // Opcional: quitar miedo al llegar a casa
+    }
+
+    // ... (Aquí sigue tu código normal de movimiento y sensor de tiles) ...
     var dir_casa = point_direction(x, y, room_width/2, room_height/2);
     x += lengthdir_x(velocidad_caza, dir_casa);
     y += lengthdir_y(velocidad_caza, dir_casa);
     
-    // Si llego a la nieve, descanso
-    if (tilemap_get_at_pixel(global.tilemap_nieve, x, y) > 0) {
+    // El sensor de tiles original (déjalo por si detecta nieve antes de llegar al centro)
+    var sensor_x = x + lengthdir_x(10, dir_casa);
+    var sensor_y = y + lengthdir_y(10, dir_casa);
+    
+    if (tilemap_get_at_pixel(global.tilemap_nieve, sensor_x, sensor_y) > 0) {
         estado = "PASEAR";
-        hambre = 0; // Satisfecha
-        x += lengthdir_x(50, dir_casa);
-        y += lengthdir_y(50, dir_casa);
+        hambre = 0;
+        x += lengthdir_x(60, dir_casa);
+        y += lengthdir_y(60, dir_casa);
     }
+    
     if (x > xprevious) image_xscale = 1; else image_xscale = -1;
 }
 

@@ -1,5 +1,10 @@
-/// @description DIBUJAR NIEVE Y AGUA
+/// @description DIBUJAR MAPA CON DECORACIÓN ORDENADA
 
+// 1. LIMPIEZA
+instance_destroy(obj_Igloo);
+instance_destroy(obj_Pasto);
+
+// 2. CÁLCULOS BÁSICOS
 var radio = 3 + (nivel_isla * 2); 
 var cx = ancho_celdas div 2;
 var cy = alto_celdas div 2;
@@ -7,72 +12,86 @@ var cy = alto_celdas div 2;
 ds_grid_clear(global.grid_terreno, 0);
 ds_grid_set_disk(global.grid_terreno, cx, cy, radio, 1);
 
-// BUCLE DE PINTADO DOBLE
+// 3. PINTAR Y DECORAR
 for (var _x = 0; _x < ancho_celdas; _x++) {
     for (var _y = 0; _y < alto_celdas; _y++) {
         
         var valor = global.grid_terreno[# _x, _y];
         
         if (valor == 1) {
-            // === ES TIERRA ===
-            // 1. Poner Tile de Nieve (Índice 1 = Blanco Sólido)
+            // === ES NIEVE ===
             tilemap_set(global.tilemap_nieve, 1, _x, _y);
-            
-            // 2. Borrar agua debajo (Para que no haya agua oculta)
             tilemap_set(global.tilemap_agua, 0, _x, _y);
+            
+            // --- GENERACIÓN DE DECORACIÓN ---
+            
+            // A. Zona Segura (Ni en el centro, ni en la orilla)
+            var dist_celdas = point_distance(_x, _y, cx, cy);
+            
+            if (dist_celdas > 2 && dist_celdas < (radio - 2)) {
+                
+                var real_x = (_x * 64) + 32;
+                var real_y = (_y * 64) + 32;
+                var suerte = irandom(100);
+                
+                // B. INTENTAR PONER IGLÚ (Probabilidad 3%)
+                // Subí un poco la probabilidad (de 2 a 3) porque el filtro de distancia
+                // va a eliminar varios intentos, así compensamos.
+                if (suerte < 3) {
+                    
+                    // --- FILTRO DE SEPARACIÓN (NUEVO) ---
+                    // Checamos un radio de 150 pixeles alrededor.
+                    // Si NO hay colisión con otro iglú, construimos.
+                    if (!collision_circle(real_x, real_y, 150, obj_Igloo, false, true)) {
+                        instance_create_layer(real_x, real_y, "Instances", obj_Igloo);
+                    }
+                }
+                
+                // C. INTENTAR PONER PASTO (Probabilidad 15%)
+                // Usamos 'else' para no poner pasto dentro de un iglú recién creado
+                else if (suerte < 15) {
+                    // Validamos también que no haya un iglú (por si acaso el de arriba falló o es vecino)
+                    if (!place_meeting(real_x, real_y, obj_Igloo)) {
+                        var azar_x = real_x + irandom_range(-20, 20);
+                        var azar_y = real_y + irandom_range(-20, 20);
+                        instance_create_layer(azar_x, azar_y, "Instances", obj_Pasto);
+                    }
+                }
+            }
         } 
         else {
-            // === ES MAR ===
-            // 1. Borrar Nieve
+            // === ES AGUA ===
             tilemap_set(global.tilemap_nieve, 0, _x, _y);
-            
-            // 2. Poner Tile de Agua (Índice 1 = Azul Sólido)
-            // Asegúrate que tu TileSetWater tenga un cuadro azul en la posición 1
             tilemap_set(global.tilemap_agua, 1, _x, _y);
         }
     }
-	// ... (Tus bucles for anteriores terminan aquí) ...
-// } 
+}
 
-// ... (Después de los bucles que pintan el mapa) ...
-
-// =========================================================
-//        RESCATE MATEMÁTICO (Infalible)
-// =========================================================
-
-// 1. Calcular el Radio Real de la isla en PIXELES
-// (Radio en celdas * 64px que mide cada cuadro)
-var radio_en_pixeles = radio * 64; 
-
-// Centro de la sala en pixeles
-var centro_sala_x = room_width / 2;
-var centro_sala_y = room_height / 2;
+// 4. RESCATE DE ORCAS (Hacia afuera)
+var radio_px = radio * 64; 
+var centro_x_px = room_width / 2;
+var centro_y_px = room_height / 2;
 
 with (orca) {
-    
-    // 2. Medir distancia al centro
-    var dist_al_centro = point_distance(x, y, centro_sala_x, centro_sala_y);
-    
-    // 3. VERIFICACIÓN: ¿Estoy dentro de la zona de nieve?
-    // Si mi distancia es MENOR al radio de la isla, estoy atrapada.
-    if (dist_al_centro < radio_en_pixeles) {
-        
-        // 4. TELETRANSPORTE
-        // Calculamos el ángulo para salir disparada hacia afuera
-        var dir_salida = point_direction(centro_sala_x, centro_sala_y, x, y);
-        
-        // Te colocamos JUSTO en el borde + 50 pixeles de aire
-        x = centro_sala_x + lengthdir_x(radio_en_pixeles + 50, dir_salida);
-        y = centro_sala_y + lengthdir_y(radio_en_pixeles + 50, dir_salida);
-        
-        // Resetear estado para que no se quede con bugs de movimiento
+    if (point_distance(x, y, centro_x_px, centro_y_px) < radio_px) {
+        var dir = point_direction(centro_x_px, centro_y_px, x, y);
+        x = centro_x_px + lengthdir_x(radio_px + 80, dir);
+        y = centro_y_px + lengthdir_y(radio_px + 80, dir);
         estado = "PATRULLAR";
         objetivo = noone;
-        
-        // Efecto visual para que sepas que se salvó
         effect_create_above(ef_ring, x, y, 2, c_red);
     }
 }
-	
-	
+
+// 5. RESCATE DE FOCAS (Hacia adentro)
+var tipos = [Foca1, Foca2];
+for (var i = 0; i < 2; i++) {
+    with (tipos[i]) {
+        if (place_meeting(x, y, obj_Igloo)) {
+            var dir_safe = point_direction(x, y, centro_x_px, centro_y_px);
+            x += lengthdir_x(64, dir_safe);
+            y += lengthdir_y(64, dir_safe);
+            effect_create_above(ef_smoke, x, y, 0, c_white);
+        }
+    }
 }

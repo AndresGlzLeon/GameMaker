@@ -1,89 +1,117 @@
 /// @description CONTAR, VALIDAR Y ORDENAR
 
 // =========================================================
-//        PASO 1: CENSO EN TIEMPO REAL (VALIDACIÓN)
+//        PASO 1: CENSO EN TIEMPO REAL (CORREGIDO)
 // =========================================================
-// Contamos cuántas focas están listas para salir (Paseando y sin miedo)
 focas_disponibles = 0;
+focas_fuera = 0; 
 
-with (Foca1) { if (estado == "PASEAR" && cooldown_susto <= 0) other.focas_disponibles++; }
-with (Foca2) { if (estado == "PASEAR" && cooldown_susto <= 0) other.focas_disponibles++; }
-
-// Auto-corrección: Si seleccionaste 10 pero solo quedan 3, bajar el número automáticamente
-if (cantidad_a_enviar > focas_disponibles) {
-    cantidad_a_enviar = focas_disponibles;
+// Contamos Foca 1
+with (Foca1) { 
+    // Si está paseando y sin miedo = DISPONIBLE
+    if (estado == "PASEAR" && cooldown_susto <= 0) {
+        other.focas_disponibles++;
+    }
+    // Si NO está paseando (está pescando, huyendo o regresando) = FUERA
+    if (estado != "PASEAR") {
+        other.focas_fuera++;
+    }
 }
-// Si hay 0 disponibles, el mínimo visual es 0 (o 1 para no romper lógica, pero validamos al enviar)
+
+// Contamos Foca 2
+with (Foca2) { 
+    if (estado == "PASEAR" && cooldown_susto <= 0) other.focas_disponibles++;
+    
+    if (estado != "PASEAR") {
+        other.focas_fuera++;
+    }
+}
+
+// Auto-corrección de cantidad
+if (cantidad_a_enviar > focas_disponibles) cantidad_a_enviar = focas_disponibles;
 if (cantidad_a_enviar < 1 && focas_disponibles > 0) cantidad_a_enviar = 1;
 
 
+
+
+
+
 // =========================================================
-//        PASO 2: INTERACCIÓN UI
+//        PASO 2: DETECTAR CLICS (UI)
 // =========================================================
 if (mouse_check_button_pressed(mb_left)) {
     
     var mx_gui = device_mouse_x_to_gui(0);
     var my_gui = device_mouse_y_to_gui(0);
-    var click_en_ui = false;
+    var click_en_ui = false; // Candado para no enviar focas si toco botones
     
-    // --- A. BOTÓN PRINCIPAL (ABRIR / RETIRADA) ---
+    // --- A. BOTÓN PRINCIPAL (CAZAR / RETIRADA) ---
     if (point_in_rectangle(mx_gui, my_gui, main_x, main_y, main_x+main_w, main_y+main_h)) {
         
         if (menu_abierto) {
-            // --- LÓGICA DE RETIRADA (RECALL) ---
-            // Si estaba abierto y lo cierro, llamo a las que están cazando
-            with (Foca1) {
-                if (estado == "IR_A_PESCAR" || estado == "BUSCANDO_PECES") estado = "REGRESAR";
+            // SI ESTÁ ABIERTO -> ES BOTÓN DE RETIRADA/CERRAR
+            
+            // Ordenar regreso a todas las que estén fuera
+            if (focas_fuera > 0) {
+                with (Foca1) { if (estado != "PASEAR" && estado != "ESCAPANDO") estado = "REGRESAR"; }
+                with (Foca2) { if (estado != "PASEAR" && estado != "ESCAPANDO") estado = "REGRESAR"; }
+                show_debug_message("¡RETIRADA EJECUTADA!");
             }
-            with (Foca2) {
-                if (estado == "IR_A_PESCAR" || estado == "BUSCANDO_PECES") estado = "REGRESAR";
-            }
-            show_debug_message("¡RETIRADA! Todas las unidades regresan a la base.");
+            
+            menu_abierto = false; // Cerrar menú
+        } 
+        else {
+            // SI ESTÁ CERRADO -> ABRIR MENÚ DE CAZA
+            menu_abierto = true;
         }
         
-        menu_abierto = !menu_abierto;
         click_en_ui = true;
     }
     
-    // --- B. BOTONES +/- (Solo si menú abierto) ---
+    // --- B. CONTROLES DEL PANEL (Solo si está abierto) ---
     if (menu_abierto) {
-        // [-] MENOS
+        
+        // Botón [-]
         if (point_in_rectangle(mx_gui, my_gui, btn_minus_x, btn_minus_y, btn_minus_x+btn_size, btn_minus_y+btn_size)) {
             cantidad_a_enviar = max(1, cantidad_a_enviar - 1);
             click_en_ui = true;
         }
-        // [+] MÁS
+        
+        // Botón [+]
         if (point_in_rectangle(mx_gui, my_gui, btn_plus_x, btn_plus_y, btn_plus_x+btn_size, btn_plus_y+btn_size)) {
-            // VALIDACIÓN: No subir más allá de las disponibles
-            if (cantidad_a_enviar < focas_disponibles) {
-                cantidad_a_enviar += 1;
-            }
+            if (cantidad_a_enviar < focas_disponibles) cantidad_a_enviar += 1;
             click_en_ui = true;
         }
-        // Fondo panel
+        
+        // Clic en el fondo del panel (para que no atraviese al mapa)
         if (point_in_rectangle(mx_gui, my_gui, panel_x, panel_y, panel_x+panel_w, panel_y+panel_h)) {
             click_en_ui = true;
         }
     }
 
     // =========================================================
-    //        PASO 3: ENVIAR ORDEN (CLIC EN MAPA)
+    //        PASO 3: ENVIAR AL MAPA (CLIC EN TERRENO)
     // =========================================================
+    
+    // Solo enviamos si: Menú abierto + Clic fuera de UI + Hay focas
     if (menu_abierto && !click_en_ui && focas_disponibles > 0) {
         
-        var target_x = mouse_x;
+        var target_x = mouse_x; // Coordenadas en el mundo (Room)
         var target_y = mouse_y;
         var enviadas = 0;
         
+        // Feedback Visual en el mapa (Aro verde donde diste la orden)
         effect_create_above(ef_ring, target_x, target_y, 1, c_lime);
         
-        // Recolección y Barajado
+        // 1. Crear lista de candidatas
         var lista = ds_list_create();
         with (Foca1) { if (estado == "PASEAR" && cooldown_susto <= 0) ds_list_add(lista, id); }
         with (Foca2) { if (estado == "PASEAR" && cooldown_susto <= 0) ds_list_add(lista, id); }
+        
+        // 2. Barajar para que sea aleatorio
         ds_list_shuffle(lista);
         
-        // Envío (Usando cantidad_a_enviar que ya está validada arriba)
+        // 3. Enviar a las elegidas
         var total = ds_list_size(lista);
         for (var i = 0; i < total; i++) {
             if (enviadas >= cantidad_a_enviar) break;
@@ -92,10 +120,15 @@ if (mouse_check_button_pressed(mb_left)) {
             with (foca) {
                 estado = "IR_A_PESCAR";
                 tiempo_en_agua = 0;
+                // Van hacia el clic + variación para que no se encimen
                 dir_movimiento = point_direction(x, y, target_x, target_y) + irandom_range(-10, 10);
             }
             enviadas++;
         }
-        ds_list_destroy(lista);
+        
+        ds_list_destroy(lista); // Limpiar memoria
+        
+        // Opcional: Cerrar menú automáticamente al enviar (estilo RTS rápido)
+        // menu_abierto = false; 
     }
 }

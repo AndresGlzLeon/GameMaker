@@ -19,6 +19,26 @@ draw_set_valign(fa_middle);
 // --- 2. BOTÓN PRINCIPAL ---
 var hover_main = point_in_rectangle(mx, my, main_x, main_y, main_x+main_w, main_y+main_h);
 
+// En Draw GUI...
+
+// Lógica de Estado
+var color_actual = col_accion;
+var texto_btn = "CAZAR"; // Texto por defecto
+var icono_a_usar = Foca1_R; 
+
+if (menu_abierto) {
+    // AQUÍ ES CLAVE: Usamos el if/else
+    if (focas_fuera > 0) {
+        color_actual = col_alerta; 
+        texto_btn = "RETIRADA";
+    } else {
+        color_actual = c_dkgray; // Color gris para cerrar
+        texto_btn = "CERRAR";
+    }
+}
+
+// ... (El resto de tu código de dibujo de botón sigue igual) ...
+
 // Lógica de Estado
 var color_actual = col_accion;
 var texto_btn = "CAZAR";
