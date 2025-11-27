@@ -1,7 +1,27 @@
 /// @description Configuración UI (Corregida)
 
+// Inicializar variables globales si no existen
+if (!variable_global_exists("pescado_capturado")) {
+    global.pescado_capturado = 0;
+}
+
+if (!variable_global_exists("costo_expansion")) {
+    global.costo_expansion = 100; 
+}
+
+if (!variable_global_exists("modo_carga")) {
+    global.modo_carga = false;
+}
+
 // --- VARIABLES DE JUEGO ---
-global.pescado_capturado = 0; 
+// SI ESTAMOS CARGANDO, NO REINICIALIZAR (el valor ya viene de cargar_partida_json)
+// SI NO ESTAMOS CARGANDO, INICIALIZAR EN 0
+if (!global.modo_carga) {
+    global.pescado_capturado = 0;
+}
+
+show_debug_message("🎮 GameManager Init | Modo Carga: " + string(global.modo_carga) + " | Dinero: " + string(global.pescado_capturado));
+
 focas_disponibles = 0;
 focas_fuera = 0;
 

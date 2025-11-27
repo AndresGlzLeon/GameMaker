@@ -1,6 +1,7 @@
 /// @description GENERAR ORCAS (Corregido y Aumentado)
 
-var cantidad_orcas = 30; // Subimos la cantidad para más dificultad
+// Si estamos cargando, usar el número guardado. Si no, usar 30 por defecto.
+var cantidad_orcas = variable_global_exists("orcas_guardadas") ? global.orcas_guardadas : 30;
 var creadas = 0;
 var intentos = 0;
 
@@ -45,4 +46,4 @@ while (creadas < cantidad_orcas && intentos < 10000) { // Más intentos (10k)
     }
 }
 
-show_debug_message("🦈 REPORTE: Se generaron " + string(creadas) + " orcas de " + string(cantidad_orcas) + " solicitadas.");
+show_debug_message("🦈 REPORTE: Se generaron " + string(creadas) + " orcas de " + string(cantidad_orcas) + " solicitadas. [Modo Carga: " + string(global.modo_carga) + "]");

@@ -1,63 +1,97 @@
 // FUNCIÓN PARA GUARDAR (Desde el Menú de Pausa)
 function guardar_partida_json() {
-    
-    // 1. IMPORTANTE: Despertar a todos los objetos para poder contarlos
-    // (Si están desactivados por la pausa, instance_number devolvería 0)
-    instance_activate_all(); 
+    try {
+        // 1. DESPERTAR A TODOS (Para poder contarlos)
+        instance_activate_all(); 
 
-    // 2. Abrir archivo INI
-    ini_open("savegame.ini");
+        // 2. Abrir archivo INI
+        ini_open("savegame.ini");
 
-    // 3. Guardar Datos Generales
-    var idioma_actual = variable_global_exists("idioma") ? global.idioma : "ESP";
-    ini_write_string("Datos", "Idioma", idioma_actual);
-    
-    // 4. CENSAR LA POBLACIÓN (Guardar cantidades exactas)
-    // Asegúrate de que tus objetos se llaman Foca1, Foca2, Pez y orca
-    var total_focas = instance_number(Foca1) + instance_number(Foca2);
-    ini_write_real("Datos", "Focas", total_focas); 
-    
-    var total_peces = instance_number(Pez); 
-    ini_write_real("Datos", "Peces", total_peces);
-    
-    var total_orcas = instance_number(orca); 
-    ini_write_real("Datos", "Orcas", total_orcas);
-    
-    // 5. Cerrar archivo
-    ini_close();
+        // --- SECCIÓN A: DATOS GENERALES ---
+        var idioma_actual = variable_global_exists("idioma") ? global.idioma : "ESP";
+        ini_write_string("Datos", "Idioma", idioma_actual);
+        
+        // --- SECCIÓN B: ECONOMÍA ---
+        ini_write_real("Economia", "Dinero", global.pescado_capturado);
+        
+        var costo_actual = variable_global_exists("costo_expansion") ? global.costo_expansion : 100;
+        ini_write_real("Economia", "CostoExpansion", costo_actual);
 
-    // 6. Volver a congelar el juego (Porque seguimos en el menú de pausa)
-    instance_deactivate_all(true);
-    // Reactivar solo el sistema de pausa para que no desaparezca el menú
-    instance_activate_object(obj_Sistema_Pausa);
+        // --- SECCIÓN C: POBLACIÓN ---
+        var total_focas = instance_number(Foca1) + instance_number(Foca2);
+        ini_write_real("Poblacion", "Focas", total_focas); 
+        
+        var total_peces = instance_number(Pez); 
+        ini_write_real("Poblacion", "Peces", total_peces);
+        
+        var total_orcas = instance_number(orca); 
+        ini_write_real("Poblacion", "Orcas", total_orcas);
+        
+        // --- SECCIÓN D: TERRENO ---
+        var nivel_isla_actual = 1;
+        if (instance_exists(obj_Mapa)) {
+            nivel_isla_actual = obj_Mapa.nivel_isla;
+        }
+        ini_write_real("Terreno", "NivelIsla", nivel_isla_actual);
+        
+        // 3. Cerrar archivo
+        ini_close();
 
-    show_message("¡PARTIDA GUARDADA!\nFocas: " + string(total_focas) + "\nPeces: " + string(total_peces));
+        show_debug_message("✓ GUARDADO EXITOSO - Dinero: " + string(global.pescado_capturado) + ", Focas: " + string(total_focas) + ", Orcas: " + string(total_orcas) + ", Nivel Isla: " + string(nivel_isla_actual));
+        
+        // Mostrar mensaje al usuario (sin pausar más)
+        show_message("¡PARTIDA GUARDADA!\n\nFocas: " + string(total_focas) + "\nPeces: " + string(total_peces) + "\nOrcas: " + string(total_orcas) + "\nDinero: " + string(global.pescado_capturado) + "\nNivel Isla: " + string(nivel_isla_actual));
+        
+        // 4. Volver a congelar solo lo necesario (sin tocar HUD)
+        instance_deactivate_all(true);
+        instance_activate_object(obj_Sistema_Pausa);
+        if (instance_exists(obj_HUD_Entorno)) instance_activate_object(obj_HUD_Entorno);
+        
+    } catch (error) {
+        show_message("❌ ERROR AL GUARDAR:\n" + error.message);
+        show_debug_message("ERROR EN GUARDADO: " + error.message + " | Línea: " + string(error.line_number));
+    }
 }
 
 // FUNCIÓN PARA CARGAR (Desde el Menú Principal)
 function cargar_partida_json() {
     if (file_exists("savegame.ini")) {
         
-        ini_open("savegame.ini");
-        
-        // 1. Leer Configuración
-        global.idioma = ini_read_string("Datos", "Idioma", "ESP");
-        
-        // 2. Leer Poblaciones y guardarlas en variables globales
-        // Estas variables las leerán los controladores al iniciar la sala
-        global.focas_guardadas = ini_read_real("Datos", "Focas", 20); 
-        global.peces_guardados = ini_read_real("Datos", "Peces", 15);
-        global.orcas_guardadas = ini_read_real("Datos", "Orcas", 1);
-        
-        // 3. ACTIVAR MODO CARGA (La bandera clave)
-        global.modo_carga = true; 
-        
-        ini_close();
-        
-        // 4. Ir al juego
-        room_goto(R_Play);
+        try {
+            ini_open("savegame.ini");
+            
+            // 1. CARGAR CONFIGURACIÓN
+            global.idioma = ini_read_string("Datos", "Idioma", "ESP");
+            
+            // 2. CARGAR ECONOMÍA
+            global.pescado_capturado = ini_read_real("Economia", "Dinero", 0);
+            global.costo_expansion = ini_read_real("Economia", "CostoExpansion", 100);
+            
+            // 3. CARGAR POBLACIÓN (Para los generadores)
+            global.focas_guardadas = ini_read_real("Poblacion", "Focas", 20); 
+            global.peces_guardados = ini_read_real("Poblacion", "Peces", 15);
+            global.orcas_guardadas = ini_read_real("Poblacion", "Orcas", 1);
+            
+            // 4. CARGAR TERRENO
+            global.nivel_isla_guardado = ini_read_real("Terreno", "NivelIsla", 1);
+            
+            // 5. ACTIVAR MODO CARGA
+            global.modo_carga = true; 
+            
+            ini_close();
+            
+            show_debug_message("✓ CARGA EXITOSA - Dinero: " + string(global.pescado_capturado) + ", Focas: " + string(global.focas_guardadas) + ", Orcas: " + string(global.orcas_guardadas) + ", Nivel Isla: " + string(global.nivel_isla_guardado));
+            
+            // 6. Ir al juego
+            room_goto(R_Play);
+            
+        } catch (error) {
+            show_message("❌ ERROR AL CARGAR:\n" + error.message);
+            show_debug_message("ERROR EN CARGA: " + error.message);
+        }
         
     } else {
-        show_message("No se encontró archivo de guardado.");
+        show_message("❌ No se encontró archivo de guardado.");
+        show_debug_message("Archivo savegame.ini no existe.");
     }
 }

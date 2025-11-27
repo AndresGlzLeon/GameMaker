@@ -36,7 +36,7 @@ for (var i = 0; i < array_length(opciones); i++) {
                 else global.idioma = "ESP";
                 
                 // REGENERAMOS LA LISTA (Para mantener la lógica de Cargar/No Cargar)
-                var existe_save = file_exists("savegame.dat");
+                var existe_save = file_exists("savegame.ini");
                 
                 if (global.idioma == "ESP") {
                     if (existe_save) opciones = ["Jugar", "Cargar Partida", "Idioma: ESP", "Salir"];

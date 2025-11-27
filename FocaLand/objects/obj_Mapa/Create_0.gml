@@ -2,7 +2,18 @@
 
 ancho_celdas = room_width div 64;
 alto_celdas = room_height div 64;
-nivel_isla = 1;
+
+// CARGAR NIVEL DE ISLA SI ESTAMOS EN MODO CARGA
+if (variable_global_exists("modo_carga") && global.modo_carga == true) {
+    if (variable_global_exists("nivel_isla_guardado")) {
+        nivel_isla = global.nivel_isla_guardado;
+        show_debug_message("🏝️ CARGANDO TERRENO: Nivel Isla " + string(nivel_isla));
+    } else {
+        nivel_isla = 1;
+    }
+} else {
+    nivel_isla = 1;
+}
 
 // Crear memoria
 global.grid_terreno = ds_grid_create(ancho_celdas, alto_celdas);
