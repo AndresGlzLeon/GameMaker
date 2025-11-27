@@ -1,9 +1,10 @@
-/// @description GENERAR ANILLO DE DEPREDADORES
+/// @description GENERAR ORCAS (Corregido y Aumentado)
 
-var cantidad_orcas = 8; // AUMENTAMOS LA DIFICULTAD (Antes eran 3)
+var cantidad_orcas = 5; // Subimos la cantidad para más dificultad
 var creadas = 0;
 var intentos = 0;
 
+// Seguridad
 if (!variable_global_exists("tilemap_agua") || !variable_global_exists("tilemap_nieve")) {
     alarm[0] = 10; exit;
 }
@@ -11,32 +12,37 @@ if (!variable_global_exists("tilemap_agua") || !variable_global_exists("tilemap_
 var cx = room_width / 2;
 var cy = room_height / 2;
 
-// BUCLE DE CREACIÓN
-while (creadas < cantidad_orcas && intentos < 2000) {
+// BUCLE ROBUSTO
+while (creadas < cantidad_orcas && intentos < 10000) { // Más intentos (10k)
     intentos++;
     
-    // --- LÓGICA DE "ANILLO DE LA MUERTE" ---
-    // En lugar de X/Y al azar, elegimos una distancia desde el centro.
-    // Entre 400 y 900 pixeles del centro es la "Zona de Peligro".
-    var distancia = irandom_range(400, 900);
+    // --- CAMBIO CLAVE: RADIO MÁS GRANDE ---
+    // Antes era 400-900. Ahora 800-2200.
+    // Esto cubre casi todo el mar en un mapa grande.
+    var distancia = irandom_range(800, 2200);
     var angulo = irandom(359);
     
     var px = cx + lengthdir_x(distancia, angulo);
     var py = cy + lengthdir_y(distancia, angulo);
+    
+    // Validar límites del mundo
+    px = clamp(px, 50, room_width - 50);
+    py = clamp(py, 50, room_height - 50);
 
-    // 1. Validar que sea Agua y NO sea Nieve
+    // Validar Terreno
     var hay_agua = tilemap_get_at_pixel(global.tilemap_agua, px, py) > 0;
     var hay_nieve = tilemap_get_at_pixel(global.tilemap_nieve, px, py) > 0;
     
     if (hay_agua && !hay_nieve) {
-        // Crear la orca
-        var nueva_orca = instance_create_layer(px, py, "Instances", obj_Orca);
         
-        // Truco: Que nazcan mirando hacia la isla para dar miedo desde el inicio
-        nueva_orca.dir_movimiento = point_direction(px, py, cx, cy) + irandom_range(-45, 45);
+        // Crear Orca
+        var nueva = instance_create_layer(px, py, "Instances", orca);
+        
+        // Que nazca mirando al centro (acechando)
+        nueva.dir_movimiento = point_direction(px, py, cx, cy) + irandom_range(-20, 20);
         
         creadas++;
     }
 }
 
-show_debug_message("⚠️ ALERTA: " + string(creadas) + " orcas patrullando la costa.");
+show_debug_message("🦈 REPORTE: Se generaron " + string(creadas) + " orcas de " + string(cantidad_orcas) + " solicitadas.");
