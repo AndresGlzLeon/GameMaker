@@ -1,21 +1,22 @@
-/// @description Configuración UI y Selección
+/// @description Configuración UI y Lógica
 
-// Variables de Juego
 global.pescado_capturado = 0;
-cantidad_seleccionada = 5; // Por defecto enviamos 5
+cantidad_a_enviar = 1; // Empezamos con 1 por seguridad
+focas_disponibles = 0; // Variable para saber el límite real
 
-// Configuración Visual de Botones (X, Y, Ancho, Alto)
-// Botón 1
-btn1_x = 32; btn1_y = room_height - 180;
-btn1_w = 200; btn1_h = 40;
+menu_abierto = false;
 
-// Botón 5
-btn5_x = 32; btn5_y = room_height - 120;
-btn5_w = 200; btn5_h = 40;
+// --- CONFIGURACIÓN VISUAL (Igual que antes) ---
+main_w = 200; main_h = 50;
+main_x = (display_get_gui_width()/2) - (main_w/2);
+main_y = display_get_gui_height() - 60;
 
-// Botón 10
-btn10_x = 32; btn10_y = room_height - 60;
-btn10_w = 200; btn10_h = 40;
+panel_w = 300; panel_h = 80;
+panel_x = (display_get_gui_width()/2) - (panel_w/2);
+panel_y = main_y - panel_h - 10;
 
-// Fuente (opcional)
+btn_size = 40;
+btn_minus_x = panel_x + 20; btn_minus_y = panel_y + 20;
+btn_plus_x = panel_x + panel_w - 60; btn_plus_y = panel_y + 20;
+
 draw_set_font(-1);
