@@ -1,15 +1,46 @@
-/// @description INTERFAZ COMANDANTE + EXPANSIÓN PRO
+/// @description INTERFAZ: Marcador, Botones y Menú
 
 var mx = device_mouse_x_to_gui(0);
 var my = device_mouse_y_to_gui(0);
 
-// --- CONFIGURACIÓN DE FUENTE Y ALINEACIÓN ---
-draw_set_font(fnt_Botones);
-draw_set_halign(fa_left);
-draw_set_valign(fa_middle);
+// --- CÁLCULOS DE ECONOMÍA (Para mostrar precios reales) ---
+var total_focas = instance_number(Foca1) + instance_number(Foca2);
+
+// Fórmula de precio BARATO (la misma del Step)
+var precio_unitario = 1 + floor(total_focas / 20); 
+var costo_banquete = total_focas * precio_unitario;
+
+
+
+
 
 // =========================================================
-//            1. BOTÓN EXPANSIÓN (MEJORADO)
+//           BOTÓN ALIMENTAR (¡AQUÍ ESTÁ!)
+// =========================================================
+var puede_alimentar = (global.pescado_capturado >= costo_banquete && total_focas >= 2);
+var col_feed = c_dkgray;
+
+if (puede_alimentar) col_feed = c_lime; // Verde si alcanza
+// Hover
+if (point_in_rectangle(mx, my, btn_feed_x, btn_feed_y, btn_feed_x+btn_feed_w, btn_feed_y+btn_feed_h)) {
+    if (puede_alimentar) col_feed = c_green;
+}
+
+draw_set_color(col_feed);
+draw_rectangle(btn_feed_x, btn_feed_y, btn_feed_x+btn_feed_w, btn_feed_y+btn_feed_h, false);
+draw_set_color(c_white);
+draw_rectangle(btn_feed_x, btn_feed_y, btn_feed_x+btn_feed_w, btn_feed_y+btn_feed_h, true);
+
+draw_set_halign(fa_center);
+
+var txt_feed = "ALIMENTAR (" + string(costo_banquete) + " 🐟)";
+if (total_focas < 2) txt_feed = "FALTAN FOCAS";
+
+draw_text(btn_feed_x + btn_feed_w/2, btn_feed_y + btn_feed_h/2, txt_feed);
+
+
+// =========================================================
+//           BOTÓN EXPANDIR
 // =========================================================
 
 // Lógica de Estado
@@ -159,5 +190,10 @@ if (menu_abierto) {
     draw_text_transformed(centro_x, centro_y + 20, "Listas", 0.7, 0.7, 0);
 }
 
+<<<<<<< HEAD
 // Reset final obligatorio
 draw_set_halign(fa_left); draw_set_valign(fa_top); draw_set_color(c_white); draw_set_alpha(1);
+=======
+// Reset final
+draw_set_halign(fa_left); draw_set_valign(fa_top); draw_set_color(c_white);
+>>>>>>> 919b85eb9e1016afc663e980e13feeffc7bdc492
