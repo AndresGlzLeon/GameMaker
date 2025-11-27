@@ -45,6 +45,7 @@
     {"id":{"name":"menuPrincipal","path":"objects/menuPrincipal/menuPrincipal.yy",},},
     {"id":{"name":"obj_Camara","path":"objects/obj_Camara/obj_Camara.yy",},},
     {"id":{"name":"obj_GameManager","path":"objects/obj_GameManager/obj_GameManager.yy",},},
+    {"id":{"name":"obj_HUD_Entorno","path":"objects/obj_HUD_Entorno/obj_HUD_Entorno.yy",},},
     {"id":{"name":"obj_Mapa","path":"objects/obj_Mapa/obj_Mapa.yy",},},
     {"id":{"name":"obj_Nieve_FX","path":"objects/obj_Nieve_FX/obj_Nieve_FX.yy",},},
     {"id":{"name":"obj_Sistema_Pausa","path":"objects/obj_Sistema_Pausa/obj_Sistema_Pausa.yy",},},

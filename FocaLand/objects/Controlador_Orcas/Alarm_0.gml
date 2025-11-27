@@ -30,7 +30,7 @@ while (creadas < cantidad_orcas && intentos < 2000) {
     
     if (hay_agua && !hay_nieve) {
         // Crear la orca
-        var nueva_orca = instance_create_layer(px, py, "Instances", obj_Orca);
+        var nueva_orca = instance_create_layer(px, py, "Instances", orca);
         
         // Truco: Que nazcan mirando hacia la isla para dar miedo desde el inicio
         nueva_orca.dir_movimiento = point_direction(px, py, cx, cy) + irandom_range(-45, 45);

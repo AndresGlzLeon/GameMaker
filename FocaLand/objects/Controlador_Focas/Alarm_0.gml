@@ -1,12 +1,26 @@
-/// @description GENERAR MANADA
+/// @description GENERAR MANADA (INTELIGENTE)
 
-var cantidad_focas = 20; // ¿Cuántas quieres?
+// 1. DECIDIR CUÁNTAS FOCAS CREAR
+var cantidad_focas = 20; // Valor por defecto (Nueva Partida)
+
+// Si estamos en "Modo Carga", usamos el valor del archivo
+if (variable_global_exists("modo_carga") && global.modo_carga == true) {
+    cantidad_focas = global.focas_guardadas;
+    
+    // (Opcional) Debug para que veas que funciona
+    show_debug_message("MODO CARGA: Creando solo " + string(cantidad_focas) + " focas.");
+}
+
+// ---------------------------------------------------------
+// EL RESTO DE TU CÓDIGO SIGUE IGUAL (Solo cambié la variable de arriba)
+// ---------------------------------------------------------
+
 var creadas = 0;
 var intentos = 0;
 
 // Verificamos que el mapa exista
 if (!variable_global_exists("tilemap_nieve")) {
-    alarm[0] = 5; // Si no está listo, espera otros 5 frames
+    alarm[0] = 5; 
     exit;
 }
 
@@ -14,21 +28,19 @@ if (!variable_global_exists("tilemap_nieve")) {
 while (creadas < cantidad_focas && intentos < 1000) {
     intentos++;
     
-    // Elegir punto al azar en la pantalla
     var pos_x = irandom_range(64, room_width - 64);
     var pos_y = irandom_range(64, room_height - 64);
 
-    // PREGUNTA CLAVE: ¿Hay nieve en este punto? (Tile > 0)
     if (tilemap_get_at_pixel(global.tilemap_nieve, pos_x, pos_y) > 0) {
         
-        // ¡SITIO VÁLIDO! 
-        // Lanzar moneda: ¿Gris o Negra?
         var tipo_foca = choose(Foca1, Foca2);
-        
         instance_create_layer(pos_x, pos_y, "Instances", tipo_foca);
         
         creadas++;
     }
 }
 
-show_debug_message("¡Nacieron " + string(creadas) + " focas en la isla!");
+// IMPORTANTE: Apagar el modo carga para que no se quede pegado para siempre
+if (variable_global_exists("modo_carga")) {
+    global.modo_carga = false; 
+}

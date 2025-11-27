@@ -20,6 +20,7 @@ for (var i = 0; i < array_length(opciones); i++) {
             
             // --- 1. JUGAR ---
             if (accion == "Jugar" || accion == "Play") {
+				global.modo_carga = false; // <--- AGREGA ESTO: "No estamos cargando"
                 room_goto(R_Play); // Tu sala de juego
             }
             

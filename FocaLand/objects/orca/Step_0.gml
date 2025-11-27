@@ -7,24 +7,58 @@ if (!variable_global_exists("tilemap_nieve")) exit;
 // =========================================================
 if (estado == "PATRULLAR") {
     
-    // ... (Tu código de movimiento y choque con nieve sigue aquí) ...
-    // x += _dx;
-    // y += _dy;
+    // 1. Movimiento
+    var _dx = lengthdir_x(velocidad_patrulla, dir_movimiento);
+    var _dy = lengthdir_y(velocidad_patrulla, dir_movimiento);
+    var choco = false;
 
-    // --- NUEVO: INSTINTO DE ACECHO (Mantenerse cerca de la isla) ---
-    var dist_centro = point_distance(x, y, room_width/2, room_height/2);
-    
-    // Si la orca se aleja más de 1500 pixeles del centro...
-    if (dist_centro > 1500) {
-        // ...gira suavemente para volver a la zona de caza
-        var dir_centro = point_direction(x, y, room_width/2, room_height/2);
-        
-        // Lerp de ángulo para que gire natural y no de golpe
-        var diff = angle_difference(dir_movimiento, dir_centro);
-        dir_movimiento -= diff * 0.05; // Giro suave
+    // 2. EVITAR LA NIEVE (Rebotar si toca tierra)
+    if (tilemap_get_at_pixel(global.tilemap_nieve, x + lengthdir_x(60, dir_movimiento), y) > 0) {
+        _dx = -_dx; x -= sign(_dx)*5; choco = true;
+    }
+    if (tilemap_get_at_pixel(global.tilemap_nieve, x, y + lengthdir_y(60, dir_movimiento)) > 0) {
+        _dy = -_dy; y -= sign(_dy)*5; choco = true;
     }
     
-    // ... (El resto de tu código de buscar presas sigue aquí) ...
+    // 3. REBOTAR EN BORDES DEL MUNDO
+    if (x < 0 || x > room_width || y < 0 || y > room_height) {
+        dir_movimiento += 180; choco = true;
+    }
+
+    if (choco) dir_movimiento = irandom(359);
+
+    x += _dx;
+    y += _dy;
+
+    // 4. BUSCAR PRESAS (Focas en el agua)
+    // Buscamos la más cercana de cualquier tipo (Gris o Negra)
+    var foca_g = instance_nearest(x, y, Foca1);
+    var foca_n = instance_nearest(x, y, Foca2);
+    
+    var posible_presa = noone;
+    var dist = 99999;
+
+    // Comparamos cuál está más cerca
+    if (foca_g != noone) {
+        var d = point_distance(x, y, foca_g.x, foca_g.y);
+        if (d < dist) { dist = d; posible_presa = foca_g; }
+    }
+    if (foca_n != noone) {
+        var d = point_distance(x, y, foca_n.x, foca_n.y);
+        if (d < dist) { dist = d; posible_presa = foca_n; }
+    }
+
+    // SI ENCONTRÓ UNA Y ESTÁ CERCA
+    if (posible_presa != noone && dist < radio_deteccion) {
+        // Regla de Oro: La orca solo ataca si la foca NO está en tierra
+        if (tilemap_get_at_pixel(global.tilemap_nieve, posible_presa.x, posible_presa.y) == 0) {
+            estado = "PERSEGUIR";
+            objetivo = posible_presa;
+        }
+    }
+    
+    // Animación
+    if (_dx != 0) image_xscale = sign(_dx);
 }
 
 // =========================================================
