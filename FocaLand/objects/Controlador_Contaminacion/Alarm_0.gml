@@ -14,7 +14,7 @@ if (instance_exists(obj_Mapa)) nivel_actual = obj_Mapa.nivel_isla;
 // 2. Fórmula de Probabilidad
 // Base: 5% (Muy raro al inicio)
 // Incremento: +2% por cada nivel de isla
-var probabilidad = 5 + (nivel_actual * 2);
+var probabilidad = 15 + (nivel_actual * 9);
 
 // Tope máximo: Nunca más del 40% para no hacerlo injugable
 if (probabilidad > 40) probabilidad = 40;
