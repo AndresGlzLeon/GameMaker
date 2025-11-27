@@ -46,6 +46,7 @@
     {"id":{"name":"obj_GameManager","path":"objects/obj_GameManager/obj_GameManager.yy",},},
     {"id":{"name":"obj_Mapa","path":"objects/obj_Mapa/obj_Mapa.yy",},},
     {"id":{"name":"obj_Nieve_FX","path":"objects/obj_Nieve_FX/obj_Nieve_FX.yy",},},
+    {"id":{"name":"obj_Sistema_Pausa","path":"objects/obj_Sistema_Pausa/obj_Sistema_Pausa.yy",},},
     {"id":{"name":"orca","path":"objects/orca/orca.yy",},},
     {"id":{"name":"Pez","path":"objects/Pez/Pez.yy",},},
     {"id":{"name":"ps_nieve","path":"particles/ps_nieve/ps_nieve.yy",},},
