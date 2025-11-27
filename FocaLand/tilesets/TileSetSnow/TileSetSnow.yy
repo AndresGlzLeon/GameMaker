@@ -1,16 +1,14 @@
 {
   "$GMTileSet":"v1",
-  "%Name":"TilesSnow",
-  "autoTileSets":[
-    {"$GMAutoTileSet":"","%Name":"autotile_1","closed_edge":false,"name":"autotile_1","resourceType":"GMAutoTileSet","resourceVersion":"2.0","tiles":[8,1,2,3,4,5,6,7,10,11,12,13,14,15,16,0,],},
-  ],
+  "%Name":"TileSetSnow",
+  "autoTileSets":[],
   "macroPageTiles":{
     "SerialiseHeight":0,
     "SerialiseWidth":0,
     "TileSerialiseData":[],
   },
-  "name":"TilesSnow",
-  "out_columns":4,
+  "name":"TileSetSnow",
+  "out_columns":2,
   "out_tilehborder":2,
   "out_tilevborder":2,
   "parent":{
@@ -20,8 +18,8 @@
   "resourceType":"GMTileSet",
   "resourceVersion":"2.0",
   "spriteId":{
-    "name":"TileSnow",
-    "path":"sprites/TileSnow/TileSnow.yy",
+    "name":"Snow",
+    "path":"sprites/Snow/Snow.yy",
   },
   "spriteNoExport":false,
   "textureGroupId":{
@@ -36,5 +34,5 @@
   "tileWidth":64,
   "tilexoff":0,
   "tileyoff":0,
-  "tile_count":18,
+  "tile_count":4,
 }

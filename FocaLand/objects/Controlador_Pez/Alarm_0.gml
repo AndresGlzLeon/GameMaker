@@ -1,44 +1,35 @@
-/// @description Generar Pez en zona válida
+/// @description GENERAR BANCO DE PECES
 
-// 1. CONTROL DE POBLACIÓN
-// Solo creamos si hay menos del máximo permitido
-if (instance_number(Obj_Pez) < max_peces) {
+var cantidad_peces = 15; // Ajusta a tu gusto
+var creados = 0;
+var intentos = 0;
+
+// 1. Verificaciones de seguridad
+if (!variable_global_exists("tilemap_agua") || !variable_global_exists("tilemap_nieve")) {
+    alarm[0] = 10; // Si no están listos, esperar más
+    exit;
+}
+
+// 2. Bucle de creación
+while (creados < cantidad_peces && intentos < 2000) {
+    intentos++;
     
-    var creado = false;
-    var intentos = 0;
+    // Elegir punto al azar
+    var pos_x = irandom_range(32, room_width - 32);
+    var pos_y = irandom_range(32, room_height - 32);
+
+    // 3. LA REGLA DE ORO:
+    // ¿Hay Agua aquí? Y ADEMÁS... ¿No hay Nieve?
+    // (Esto evita que nazcan debajo de la isla si por error hay agua pintada abajo)
+    var hay_agua = tilemap_get_at_pixel(global.tilemap_agua, pos_x, pos_y) > 0;
+    var hay_nieve = tilemap_get_at_pixel(global.tilemap_nieve, pos_x, pos_y) > 0;
     
-    // 2. BUSCAR UN LUGAR CON AGUA (Donde NO haya nieve)
-    // Intentamos 10 veces encontrar una coordenada válida al azar
-    while (!creado && intentos < 10) {
-        intentos++;
+    if (hay_agua && !hay_nieve) {
         
-        var _x = irandom_range(32, room_width - 32);
-        var _y = irandom_range(32, room_height - 32);
-        
-        // Verificamos el mapa de tiles
-        var es_agua = true;
-        
-        if (global.tilemap_suelo != -1) {
-            // Obtenemos qué hay en esa coordenada
-            var tile_data = tilemap_get_at_pixel(global.tilemap_suelo, _x, _y);
-            var tile_index = tile_get_index(tile_data);
-            
-            // Si el índice es mayor a 0, ES HIELO/TIERRA. 
-            // Nosotros queremos agua (índice 0 o vacío).
-            if (tile_index > 0) {
-                es_agua = false;
-            }
-        }
-        
-        // 3. CREAR EL PEZ SI ES AGUA
-        if (es_agua) {
-            instance_create_layer(_x, _y, capa_instancias, Obj_Pez);
-            creado = true;
-            // Opcional: Efecto visual al nacer (una burbuja o cambio de escala)
-        }
+        // ¡Sitio perfecto: Mar abierto!
+        instance_create_layer(pos_x, pos_y, "Instances", Pez);
+        creados++;
     }
 }
 
-// 4. REINICIAR ALARMA
-// Vuelve a ejecutar este código en X segundos
-alarm[0] = game_get_speed(gamespeed_fps) * tiempo_spawn;
+show_debug_message("🐟 Peces en el agua: " + string(creados));

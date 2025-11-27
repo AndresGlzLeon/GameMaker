@@ -1,19 +1,19 @@
-/// @description VARIABLES DE LA FOCA (Solo movimiento)
+/// @description Configuración Foca Negra
 
-// 1. Velocidad
-velocidad_propia = 1.5; 
-dir_movimiento = irandom(359); 
+// --- MOVIMIENTO ---
+velocidad_propia = 1.5;   // Velocidad en tierra
+velocidad_caza = 3.5;     // Velocidad en agua
+dir_movimiento = irandom(359);
+image_speed = 0.5;
 
-// 2. Animación
-image_speed = 0.5; 
-alarm[0] = game_get_speed(gamespeed_fps) * 2; // Temporizador cambio rumbo
+// --- INTELIGENCIA ARTIFICIAL (ESTADOS) ---
+// ¡ESTA ES LA VARIABLE QUE TE FALTABA!
+estado = "PASEAR";      
+rango_vision = 250;     
+pez_objetivo = noone;   
 
-// 3. OBTENER EL MAPA DE NIEVE (Para no salirse)
-// Asegúrate de que la capa en la Room se llame "TilesSnow"
-var _layer_id = layer_get_id("TilesSnow"); 
-global.mapa_nieve = layer_tilemap_get_id(_layer_id);
-
-// Si no encuentra el mapa, avisar (pero no crear más focas)
-if (global.mapa_nieve == -1) {
-    show_debug_message("Foca no encuentra la capa TilesSnow");
+// --- MAPA ---
+if (!variable_global_exists("tilemap_nieve")) {
+    var lay_id = layer_get_id("TilesSnow");
+    global.tilemap_nieve = layer_tilemap_get_id(lay_id);
 }
