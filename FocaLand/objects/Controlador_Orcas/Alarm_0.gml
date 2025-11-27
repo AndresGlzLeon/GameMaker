@@ -1,6 +1,6 @@
 /// @description GENERAR ORCAS (Corregido y Aumentado)
 
-var cantidad_orcas = 5; // Subimos la cantidad para más dificultad
+var cantidad_orcas = 30; // Subimos la cantidad para más dificultad
 var creadas = 0;
 var intentos = 0;
 
