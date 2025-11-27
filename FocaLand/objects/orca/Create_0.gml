@@ -1,18 +1,16 @@
-/// @description Configuración del Depredador
+/// @description Depredador ALFA (Buffed)
 
-// Velocidades (Debe ser más rápida que la foca nadando)
-velocidad_patrulla = 1.5;
-velocidad_caza = 4.2; 
+// --- ESTADÍSTICAS MEJORADAS ---
+velocidad_patrulla = 1.8; // Patrulla un poco más rápido
+velocidad_caza = 4.5;     // ¡MUY RÁPIDA! (Más que la foca corriendo)
+radio_deteccion = 600;    // Ve lejísimos (antes 350)
 
-// Visión
-radio_deteccion = 350; 
-estado = "PATRULLAR"; // Estados: "PATRULLAR", "PERSEGUIR"
+estado = "PATRULLAR"; 
 objetivo = noone;
-
 dir_movimiento = irandom(359);
 image_speed = 0.5;
 
-// Conectar con Mapa de Nieve (Para no encallar)
+// Mapa
 if (!variable_global_exists("tilemap_nieve")) {
     var lay_id = layer_get_id("TilesSnow");
     global.tilemap_nieve = layer_tilemap_get_id(lay_id);
