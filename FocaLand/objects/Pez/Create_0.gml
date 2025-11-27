@@ -4,7 +4,7 @@
 velocidad_propia = 0.5; 
 dir_movimiento = irandom(359); 
 image_speed = 0.3; 
-alarm[0] = game_get_speed(gamespeed_fps) * 4;
+alarm[0] = game_get_speed(gamespeed_fps) * 10;
 
 // --- OBTENER MAPA DE AGUA (Donde SÍ puede estar) ---
 var _layer_agua = layer_get_id("TilesWater"); 
