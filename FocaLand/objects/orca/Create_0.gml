@@ -17,5 +17,5 @@ if (!variable_global_exists("tilemap_nieve")) {
 }
 
 // --- SISTEMA DE ENFERMEDAD ---
-tiempo_enfermedad = 0; // Contador: Si es > 0, está envenenado
-duracion_veneno = 1200; // 20 SEGUNDOS de enfermedad (60fps * 20)
+tiempo_enfermedad = 0; 
+duracion_veneno = 200; 

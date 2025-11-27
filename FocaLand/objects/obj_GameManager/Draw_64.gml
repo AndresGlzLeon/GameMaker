@@ -11,12 +11,7 @@ var precio_unitario = 1 + floor(total_focas / 20);
 var costo_banquete = total_focas * precio_unitario;
 
 
-// 1. MARCADOR DE PESCADO (Arriba Izquierda)
-draw_set_color(c_black); draw_set_alpha(0.5);
-draw_rectangle(10, 10, 220, 50, false);
-draw_set_alpha(1); draw_set_color(c_white);
-draw_set_halign(fa_left); draw_set_valign(fa_middle);
-draw_text(20, 30, "🐟 Pescado: " + string(global.pescado_capturado));
+
 
 
 // =========================================================

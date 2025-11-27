@@ -43,3 +43,8 @@ btn_feed_y = 20;
 alarm[0] = 60; 
 
 draw_set_font(fnt_Botones);
+
+// ... (tus otras variables) ...
+
+// Estadísticas
+global.focas_muertas = 0; // Contador de bajas
