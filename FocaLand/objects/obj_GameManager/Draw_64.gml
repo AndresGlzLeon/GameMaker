@@ -1,12 +1,51 @@
-/// @description INTERFAZ SIN DUPLICADOS
+/// @description INTERFAZ: Marcador, Botones y Menú
 
 var mx = device_mouse_x_to_gui(0);
 var my = device_mouse_y_to_gui(0);
 
-// (ELIMINÉ EL DIBUJO DEL MARCADOR DE PESCADO PARA USAR TU HUD EXISTENTE)
+// --- CÁLCULOS DE ECONOMÍA (Para mostrar precios reales) ---
+var total_focas = instance_number(Foca1) + instance_number(Foca2);
+
+// Fórmula de precio BARATO (la misma del Step)
+var precio_unitario = 1 + floor(total_focas / 20); 
+var costo_banquete = total_focas * precio_unitario;
+
+
+// 1. MARCADOR DE PESCADO (Arriba Izquierda)
+draw_set_color(c_black); draw_set_alpha(0.5);
+draw_rectangle(10, 10, 220, 50, false);
+draw_set_alpha(1); draw_set_color(c_white);
+draw_set_halign(fa_left); draw_set_valign(fa_middle);
+draw_text(20, 30, "🐟 Pescado: " + string(global.pescado_capturado));
+
 
 // =========================================================
-//           BOTÓN EXPANSIÓN
+//           BOTÓN ALIMENTAR (¡AQUÍ ESTÁ!)
+// =========================================================
+var puede_alimentar = (global.pescado_capturado >= costo_banquete && total_focas >= 2);
+var col_feed = c_dkgray;
+
+if (puede_alimentar) col_feed = c_lime; // Verde si alcanza
+// Hover
+if (point_in_rectangle(mx, my, btn_feed_x, btn_feed_y, btn_feed_x+btn_feed_w, btn_feed_y+btn_feed_h)) {
+    if (puede_alimentar) col_feed = c_green;
+}
+
+draw_set_color(col_feed);
+draw_rectangle(btn_feed_x, btn_feed_y, btn_feed_x+btn_feed_w, btn_feed_y+btn_feed_h, false);
+draw_set_color(c_white);
+draw_rectangle(btn_feed_x, btn_feed_y, btn_feed_x+btn_feed_w, btn_feed_y+btn_feed_h, true);
+
+draw_set_halign(fa_center);
+
+var txt_feed = "ALIMENTAR (" + string(costo_banquete) + " 🐟)";
+if (total_focas < 2) txt_feed = "FALTAN FOCAS";
+
+draw_text(btn_feed_x + btn_feed_w/2, btn_feed_y + btn_feed_h/2, txt_feed);
+
+
+// =========================================================
+//           BOTÓN EXPANDIR
 // =========================================================
 var tiene_dinero = (global.pescado_capturado >= costo_expansion);
 var col_exp = c_dkgray; 
@@ -17,23 +56,17 @@ if (point_in_rectangle(mx, my, btn_exp_x, btn_exp_y, btn_exp_x+btn_exp_w, btn_ex
     if (tiene_dinero) col_exp = c_yellow; 
 }
 
-// Dibujar Botón
 draw_set_color(col_exp);
 draw_rectangle(btn_exp_x, btn_exp_y, btn_exp_x+btn_exp_w, btn_exp_y+btn_exp_h, false);
-
-// Borde
 draw_set_color(c_white);
 draw_rectangle(btn_exp_x, btn_exp_y, btn_exp_x+btn_exp_w, btn_exp_y+btn_exp_h, true);
 
-// Texto
-draw_set_halign(fa_center); draw_set_valign(fa_middle);
 var txt_exp = "EXPANDIR (" + string(costo_expansion) + " 🐟)";
-draw_set_color(c_white); // Asegurar texto blanco
 draw_text(btn_exp_x + btn_exp_w/2, btn_exp_y + btn_exp_h/2, txt_exp);
 
 
 // =========================================================
-//           MENÚ ESCUADRÓN (Igual que antes)
+//           MENÚ ESCUADRÓN (ABAJO)
 // =========================================================
 
 // --- Botón Principal ---
@@ -43,12 +76,13 @@ var txt_main = "CAZAR";
 var ico = Foca1_R;
 
 if (menu_abierto) {
-    if (focas_fuera > 0) {
+    // Texto inteligente: Si hay focas fuera, dice RETIRADA
+    if (focas_fuera > 0) { 
         col_main = make_color_rgb(200, 50, 50); 
-        txt_main = "RETIRADA";
-    } else {
+        txt_main = "RETIRADA"; 
+    } else { 
         col_main = c_dkgray; 
-        txt_main = "CERRAR";
+        txt_main = "CERRAR"; 
     }
 }
 if (hover_main) col_main = merge_color(col_main, c_white, 0.2);
@@ -94,5 +128,5 @@ if (menu_abierto) {
     draw_text_transformed(centro_x - 10, centro_y, string(cantidad_a_enviar)+"/"+string(focas_disponibles), 1.2, 1.2, 0);
 }
 
-// Reset
+// Reset final
 draw_set_halign(fa_left); draw_set_valign(fa_top); draw_set_color(c_white);

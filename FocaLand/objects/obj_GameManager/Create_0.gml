@@ -1,11 +1,11 @@
-/// @description Configuración UI (Corregida)
+/// @description Configuración UI (Posiciones Corregidas)
 
 // --- VARIABLES DE JUEGO ---
 global.pescado_capturado = 0; 
 focas_disponibles = 0;
 focas_fuera = 0;
 
-// --- 1. MENÚ ESCUADRÓN (ABAJO - Esto estaba bien) ---
+// --- 1. MENÚ ESCUADRÓN (ABAJO) ---
 menu_abierto = false;
 cantidad_a_enviar = 1;
 
@@ -21,19 +21,25 @@ btn_size = 40;
 btn_minus_x = panel_x + 20; btn_minus_y = panel_y + 20;
 btn_plus_x = panel_x + panel_w - 60; btn_plus_y = panel_y + 20;
 
-// --- 2. BOTÓN EXPANSIÓN (MOVIDO A LA IZQUIERDA) ---
-costo_expansion = 10; 
-btn_exp_w = 220;
-btn_exp_h = 40;
+// --- 2. BOTONES SUPERIORES (MOVIDOS A LA IZQUIERDA) ---
+// Asumimos que tu botón de MENU ocupa los primeros 150-200 px de la derecha.
+var margen_derecho = 200; 
 
-// CAMBIO AQUÍ: Lo movemos 480 pixeles a la izquierda para dejar espacio al Menú
-btn_exp_x = display_get_gui_width() - 480; 
+// A. BOTÓN EXPANDIR
+costo_expansion = 10; 
+btn_exp_w = 220; btn_exp_h = 40;
+// Lo ponemos a la izquierda del margen del menú
+btn_exp_x = display_get_gui_width() - margen_derecho - btn_exp_w - 20; 
 btn_exp_y = 20; 
 
-draw_set_font(fnt_Botones);
-
-// ... (Tus variables de UI y botones anteriores) ...
+// B. BOTÓN ALIMENTAR
+costo_comida_por_foca = 5; // Precio base por cabeza
+btn_feed_w = 220; btn_feed_h = 40;
+// Lo ponemos a la izquierda del botón de expandir
+btn_feed_x = btn_exp_x - btn_feed_w - 20; 
+btn_feed_y = 20;
 
 // --- SISTEMA DE VIDA ---
-costo_reproduccion = 20;  // Cuesta 20 peces tener un bebé
-alarm[0] = 300;           // El "Ciclo de la Vida" se revisa cada 5 segundos
+alarm[0] = 60; 
+
+draw_set_font(fnt_Botones);
