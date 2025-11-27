@@ -38,6 +38,7 @@
     {"id":{"name":"fnt_Botones","path":"fonts/fnt_Botones/fnt_Botones.yy",},},
     {"id":{"name":"fnt_Titulo","path":"fonts/fnt_Titulo/fnt_Titulo.yy",},},
     {"id":{"name":"Controlador_Focas","path":"objects/Controlador_Focas/Controlador_Focas.yy",},},
+    {"id":{"name":"Controlador_Orcas","path":"objects/Controlador_Orcas/Controlador_Orcas.yy",},},
     {"id":{"name":"Controlador_Pez","path":"objects/Controlador_Pez/Controlador_Pez.yy",},},
     {"id":{"name":"Foca1","path":"objects/Foca1/Foca1.yy",},},
     {"id":{"name":"Foca2","path":"objects/Foca2/Foca2.yy",},},

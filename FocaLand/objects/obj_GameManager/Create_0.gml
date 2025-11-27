@@ -1,6 +1,21 @@
-/// @description Variables Globales del Juego
-global.pescado_capturado = 0;
+/// @description Configuración UI y Selección
 
-// Fuente para el texto (opcional, usa la default si no tienes)
+// Variables de Juego
+global.pescado_capturado = 0;
+cantidad_seleccionada = 5; // Por defecto enviamos 5
+
+// Configuración Visual de Botones (X, Y, Ancho, Alto)
+// Botón 1
+btn1_x = 32; btn1_y = room_height - 180;
+btn1_w = 200; btn1_h = 40;
+
+// Botón 5
+btn5_x = 32; btn5_y = room_height - 120;
+btn5_w = 200; btn5_h = 40;
+
+// Botón 10
+btn10_x = 32; btn10_y = room_height - 60;
+btn10_w = 200; btn10_h = 40;
+
+// Fuente (opcional)
 draw_set_font(-1);
-draw_set_color(c_white);

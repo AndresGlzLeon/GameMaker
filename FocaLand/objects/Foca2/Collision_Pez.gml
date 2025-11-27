@@ -1,13 +1,5 @@
-/// @description COMER PEZ
-
-// 1. Destruir al pez
-instance_destroy(other);
-
-// 2. Sumar al contador global
-if (variable_global_exists("pescado_capturado")) {
-    global.pescado_capturado += 1;
-}
-
-// 3. Volver a casa
-estado = "REGRESAR";
+instance_destroy(other); // Adiós pez
+global.pescado_capturado += 1; // Puntos
+estado = "REGRESAR"; // Volver a casa
+hambre = 0; // Resetear hambre
 pez_objetivo = noone;
