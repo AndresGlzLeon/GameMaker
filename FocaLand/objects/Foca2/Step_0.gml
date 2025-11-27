@@ -9,8 +9,8 @@ var estoy_en_tierra = tilemap_get_at_pixel(global.tilemap_nieve, x, y) > 0;
 
 if (!estoy_en_tierra && estado != "ESCAPANDO") {
     // Si existe el depredador
-    if (instance_exists(obj_Orca)) { 
-        var amenaza = instance_nearest(x, y, obj_Orca);
+    if (instance_exists(orca)) { 
+        var amenaza = instance_nearest(x, y, orca);
         
         // Si la orca está cerca (250px) -> ¡PÁNICO!
         if (amenaza != noone && point_distance(x, y, amenaza.x, amenaza.y) < 250) {
@@ -157,8 +157,8 @@ else if (estado == "ESCAPANDO") {
     var usar_turbo = false;
     
     // --- 1. DETECCIÓN DE PELIGRO Y CÁLCULO DE RUTA ---
-    if (instance_exists(obj_Orca)) {
-        var orca_cerca = instance_nearest(x, y, obj_Orca);
+    if (instance_exists(orca)) {
+        var orca_cerca = instance_nearest(x, y, orca);
         
         if (orca_cerca != noone) {
             var dist = point_distance(x, y, orca_cerca.x, orca_cerca.y);
