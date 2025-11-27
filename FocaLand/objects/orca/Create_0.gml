@@ -15,3 +15,7 @@ if (!variable_global_exists("tilemap_nieve")) {
     var lay_id = layer_get_id("TilesSnow");
     global.tilemap_nieve = layer_tilemap_get_id(lay_id);
 }
+
+// --- SISTEMA DE ENFERMEDAD ---
+tiempo_enfermedad = 0; // Contador: Si es > 0, está envenenado
+duracion_veneno = 1200; // 20 SEGUNDOS de enfermedad (60fps * 20)

@@ -1,145 +1,98 @@
-/// @description INTERFAZ COMANDANTE (TEXTO BLANCO Y ACOMODADO)
+/// @description INTERFAZ SIN DUPLICADOS
 
 var mx = device_mouse_x_to_gui(0);
 var my = device_mouse_y_to_gui(0);
 
-// --- 1. CONFIGURACIÓN DE COLORES ---
-var col_fondo_ui = make_color_rgb(10, 20, 40);    // Fondo paneles
-var col_borde    = make_color_rgb(100, 200, 255); // Celeste hielo
-var col_accion   = make_color_rgb(0, 50, 200);    // Azul Real (Botón Cazar)
-var col_alerta   = make_color_rgb(200, 50, 50);   // Rojo (Retirada)
-var col_texto    = c_white;                       // ¡TEXTO SIEMPRE BLANCO!
+// (ELIMINÉ EL DIBUJO DEL MARCADOR DE PESCADO PARA USAR TU HUD EXISTENTE)
 
-// Configurar fuente
-draw_set_font(fnt_Botones); 
-draw_set_halign(fa_left); 
-draw_set_valign(fa_middle);
+// =========================================================
+//           BOTÓN EXPANSIÓN
+// =========================================================
+var tiene_dinero = (global.pescado_capturado >= costo_expansion);
+var col_exp = c_dkgray; 
+
+if (tiene_dinero) col_exp = c_orange; 
+// Hover
+if (point_in_rectangle(mx, my, btn_exp_x, btn_exp_y, btn_exp_x+btn_exp_w, btn_exp_y+btn_exp_h)) {
+    if (tiene_dinero) col_exp = c_yellow; 
+}
+
+// Dibujar Botón
+draw_set_color(col_exp);
+draw_rectangle(btn_exp_x, btn_exp_y, btn_exp_x+btn_exp_w, btn_exp_y+btn_exp_h, false);
+
+// Borde
+draw_set_color(c_white);
+draw_rectangle(btn_exp_x, btn_exp_y, btn_exp_x+btn_exp_w, btn_exp_y+btn_exp_h, true);
+
+// Texto
+draw_set_halign(fa_center); draw_set_valign(fa_middle);
+var txt_exp = "EXPANDIR (" + string(costo_expansion) + " 🐟)";
+draw_set_color(c_white); // Asegurar texto blanco
+draw_text(btn_exp_x + btn_exp_w/2, btn_exp_y + btn_exp_h/2, txt_exp);
 
 
-// --- 2. BOTÓN PRINCIPAL ---
+// =========================================================
+//           MENÚ ESCUADRÓN (Igual que antes)
+// =========================================================
+
+// --- Botón Principal ---
 var hover_main = point_in_rectangle(mx, my, main_x, main_y, main_x+main_w, main_y+main_h);
-
-// En Draw GUI...
-
-// Lógica de Estado
-var color_actual = col_accion;
-var texto_btn = "CAZAR"; // Texto por defecto
-var icono_a_usar = Foca1_R; 
+var col_main = make_color_rgb(0, 50, 200); 
+var txt_main = "CAZAR";
+var ico = Foca1_R;
 
 if (menu_abierto) {
-    // AQUÍ ES CLAVE: Usamos el if/else
     if (focas_fuera > 0) {
-        color_actual = col_alerta; 
-        texto_btn = "RETIRADA";
+        col_main = make_color_rgb(200, 50, 50); 
+        txt_main = "RETIRADA";
     } else {
-        color_actual = c_dkgray; // Color gris para cerrar
-        texto_btn = "CERRAR";
+        col_main = c_dkgray; 
+        txt_main = "CERRAR";
     }
 }
+if (hover_main) col_main = merge_color(col_main, c_white, 0.2);
 
-// ... (El resto de tu código de dibujo de botón sigue igual) ...
-
-// Lógica de Estado
-var color_actual = col_accion;
-var texto_btn = "CAZAR";
-var icono_a_usar = Foca1_R; // Tu sprite
-
-if (menu_abierto) {
-    color_actual = col_alerta; 
-    texto_btn = "RETIRADA";
-}
-
-// Efecto Hover (Brillo al pasar el mouse)
-var alpha_btn = hover_main ? 1 : 0.9;
-if (hover_main) {
-    // Hacemos el color un poco más claro si pasas el mouse
-    color_actual = merge_color(color_actual, c_white, 0.2); 
-}
-
-// DIBUJAR FONDO DEL BOTÓN
-draw_set_color(color_actual);
-draw_set_alpha(alpha_btn);
+draw_set_color(col_main);
 draw_roundrect(main_x, main_y, main_x+main_w, main_y+main_h, false);
-
-// DIBUJAR BORDE BLANCO
-draw_set_alpha(1);
 draw_set_color(c_white);
 draw_roundrect(main_x, main_y, main_x+main_w, main_y+main_h, true);
 
-// --- DIBUJAR ICONO Y TEXTO (ACOMODADOS) ---
+// Icono y Texto
+var isize = main_h - 14;
+draw_sprite_stretched(ico, 0, main_x+10, main_y+7, isize, isize);
+draw_text(main_x + isize + 20, main_y + main_h/2, txt_main);
 
-// 1. Calculamos tamaño del icono (un poco más pequeño que el botón para dejar margen)
-var icon_size = main_h - 14; 
-var icon_y = main_y + 7; // Centrado verticalmente (7px de margen arriba)
-var icon_x = main_x + 10; // Margen izquierdo
-
-// Dibujar Icono
-draw_sprite_stretched(icono_a_usar, 0, icon_x, icon_y, icon_size, icon_size);
-
-// 2. Dibujar Texto (BLANCO)
-draw_set_color(c_white); // <--- AQUÍ ESTÁ EL CAMBIO: SIEMPRE BLANCO
-// Posición: A la derecha del icono + 10 pixeles de separación
-draw_text(icon_x + icon_size + 10, main_y + main_h/2, texto_btn);
-
-
-
-// --- 3. PANEL DESPLEGABLE ---
+// --- Panel Desplegable ---
 if (menu_abierto) {
-    
-    // Fondo oscuro
-    draw_set_color(col_fondo_ui);
-    draw_set_alpha(0.95);
+    draw_set_color(make_color_rgb(10, 20, 40));
     draw_roundrect(panel_x, panel_y, panel_x+panel_w, panel_y+panel_h, false);
-    
-    // Borde
-    draw_set_alpha(1);
-    draw_set_color(col_borde);
+    draw_set_color(make_color_rgb(100, 200, 255));
     draw_roundrect(panel_x, panel_y, panel_x+panel_w, panel_y+panel_h, true);
     
-    // TÍTULO (Ahora sí con acento, asegúrate de haber hecho el Paso 1)
-    draw_set_halign(fa_center);
-    draw_set_color(col_borde);
-    draw_text(panel_x + panel_w/2, panel_y + 12, "ESCUADRÓN"); // Subí un poco el Y (era 15)
-    
-    // --- CONTROLES ---
-    
-    // [-]
+    draw_text(panel_x + panel_w/2, panel_y + 12, "ESCUADRÓN");
+
+    // Botones +/-
     var h_min = point_in_rectangle(mx, my, btn_minus_x, btn_minus_y, btn_minus_x+btn_size, btn_minus_y+btn_size);
     draw_set_color(h_min ? c_white : c_gray);
     draw_rectangle(btn_minus_x, btn_minus_y, btn_minus_x+btn_size, btn_minus_y+btn_size, true);
-    draw_text(btn_minus_x + btn_size/2, btn_minus_y + btn_size/2, "-");
-    
-    // [+]
+    draw_text(btn_minus_x+btn_size/2, btn_minus_y+btn_size/2, "-");
+
     var h_plus = point_in_rectangle(mx, my, btn_plus_x, btn_plus_y, btn_plus_x+btn_size, btn_plus_y+btn_size);
-    var col_plus = (cantidad_a_enviar >= focas_disponibles) ? c_dkgray : (h_plus ? c_white : c_gray);
-    draw_set_color(col_plus);
+    var col_p = (cantidad_a_enviar >= focas_disponibles) ? c_dkgray : (h_plus ? c_white : c_gray);
+    draw_set_color(col_p);
     draw_rectangle(btn_plus_x, btn_plus_y, btn_plus_x+btn_size, btn_plus_y+btn_size, true);
-    draw_text(btn_plus_x + btn_size/2, btn_plus_y + btn_size/2, "+");
-    
-    
-    // --- ZONA CENTRAL (FOCA + NÚMERO) ---
-    var centro_x = panel_x + panel_w/2;
-    var centro_y = panel_y + 55; // Altura media del panel
-    
-    // 1. Dibujar Foca (A la IZQUIERDA del centro)
-    // La movemos 30 pixeles a la izquierda para que no tape el número
-    draw_sprite_ext(icono_a_usar, 0, centro_x - 35, centro_y, 1, 1, 0, c_white, 1);
-    
-    // 2. Dibujar Número (A la DERECHA del centro)
+    draw_text(btn_plus_x+btn_size/2, btn_plus_y+btn_size/2, "+");
+
+    // Número
     draw_set_color(c_white);
-    var str_num = string(cantidad_a_enviar) + "/" + string(focas_disponibles);
+    var centro_x = panel_x + panel_w/2;
+    var centro_y = panel_y + 55;
+    draw_sprite_ext(ico, 0, centro_x - 35, centro_y, 1, 1, 0, c_white, 1);
     
-    // Alineamos a la izquierda para que el número empiece después de la foca
-    draw_set_halign(fa_left); 
-    draw_text_transformed(centro_x - 10, centro_y, str_num, 1.2, 1.2, 0);
-    
-    // 3. Texto "Listas" (Abajo y centrado)
-    draw_set_halign(fa_center); // Volvemos a centrar
-    draw_set_color(c_gray);
-    draw_text_transformed(centro_x, centro_y + 22, "Listas", 0.7, 0.7, 0);
+    draw_set_halign(fa_left);
+    draw_text_transformed(centro_x - 10, centro_y, string(cantidad_a_enviar)+"/"+string(focas_disponibles), 1.2, 1.2, 0);
 }
 
-// Reset final
-draw_set_halign(fa_left);
-draw_set_valign(fa_top);
-draw_set_color(c_white);
+// Reset
+draw_set_halign(fa_left); draw_set_valign(fa_top); draw_set_color(c_white);

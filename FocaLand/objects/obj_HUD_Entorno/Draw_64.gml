@@ -47,7 +47,8 @@ draw_sprite_stretched(PezSprite, 0, x1 + 15, fila2_y - 12, tam_icono, tam_icono)
 
 // El número
 draw_set_color(c_lime);
-draw_text(x1 + 50, fila2_y, "x " + string(n_peces));
+// Muestra: "Capturados (Vivos)"
+draw_text(x1 + 50, fila2_y, string(global.pescado_capturado) + " (" + string(n_peces) + ")");
 
 
 // --- FILA 3: ORCAS ---

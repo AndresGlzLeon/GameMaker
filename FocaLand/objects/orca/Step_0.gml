@@ -1,50 +1,98 @@
-/// @description IA: Depredador Implacable
+/// @description IA ORCA: Patrulla, Caza, Manada y Enfermedad
 
 if (!variable_global_exists("tilemap_nieve")) exit;
+
+// =========================================================
+//        SISTEMA DE ENFERMEDAD (CONTAMINACIÓN)
+// =========================================================
+var multiplicador_vel = 1.0;
+
+// 1. CONTAGIO
+if (place_meeting(x, y, Pollution)) {
+    tiempo_enfermedad = duracion_veneno; // Se intoxica
+}
+
+// 2. SÍNTOMAS
+if (tiempo_enfermedad > 0) {
+    tiempo_enfermedad--;
+    multiplicador_vel = 0.7; // Se mueve al 70% (Lenta)
+    image_blend = c_lime;    // Verde
+} else {
+    image_blend = c_white;   // Sana
+}
 
 // =========================================================
 //                  ESTADO 1: PATRULLAR
 // =========================================================
 if (estado == "PATRULLAR") {
     
-    var _dx = lengthdir_x(velocidad_patrulla, dir_movimiento);
-    var _dy = lengthdir_y(velocidad_patrulla, dir_movimiento);
+    // APLICAMOS EL FRENO AQUÍ (velocidad * multiplicador)
+    var _dx = lengthdir_x(velocidad_patrulla * multiplicador_vel, dir_movimiento);
+    var _dy = lengthdir_y(velocidad_patrulla * multiplicador_vel, dir_movimiento);
     var choco = false;
 
-    // --- COLCHÓN DE SEGURIDAD AUMENTADO ---
-    // Aumentamos la distancia del sensor a 120 pixeles.
-    // La orca girará MUCHO antes de tocar la orilla blanca.
+    // --- COLCHÓN DE SEGURIDAD (Tu versión de 320px) ---
     var dist_sensor = 320; 
 
     // Chequeo Horizontal
     if (tilemap_get_at_pixel(global.tilemap_nieve, x + lengthdir_x(dist_sensor, dir_movimiento), y) > 0) {
         _dx = -_dx; 
-        x -= sign(_dx) * 10; // Empujón fuerte hacia atrás
+        x -= sign(_dx) * 10; 
         choco = true;
     }
     
     // Chequeo Vertical
     if (tilemap_get_at_pixel(global.tilemap_nieve, x, y + lengthdir_y(dist_sensor, dir_movimiento)) > 0) {
         _dy = -_dy; 
-        y -= sign(_dy) * 10; // Empujón fuerte hacia atrás
+        y -= sign(_dy) * 10; 
         choco = true;
     }
     
-    // Límites del mundo (igual que antes)
+    // Límites del mundo
     if (x < 0 || x > room_width || y < 0 || y > room_height) {
         dir_movimiento += 180; choco = true;
     }
 
     if (choco) {
-        // Al chocar, gira hacia el mar abierto
         dir_movimiento = point_direction(room_width/2, room_height/2, x, y) + irandom_range(-45, 45);
     }
 
     x += _dx;
     y += _dy;
-}
     
-    // ... (El resto del código de Acecho y Radar sigue igual abajo) ...
+    // --- INSTINTO DE ACECHO (No alejarse demasiado) ---
+    var dist_centro = point_distance(x, y, room_width/2, room_height/2);
+    if (dist_centro > 2500) { // Si se va lejísimos
+        var dir_centro = point_direction(x, y, room_width/2, room_height/2);
+        var diff = angle_difference(dir_movimiento, dir_centro);
+        dir_movimiento -= diff * 0.05; 
+    }
+
+    // --- RADAR DE PRESAS ---
+    var foca_g = instance_nearest(x, y, Foca1);
+    var foca_n = instance_nearest(x, y, Foca2);
+    var posible_presa = noone;
+    var dist = 99999;
+
+    if (foca_g != noone) {
+        var d = point_distance(x, y, foca_g.x, foca_g.y);
+        if (d < dist) { dist = d; posible_presa = foca_g; }
+    }
+    if (foca_n != noone) {
+        var d = point_distance(x, y, foca_n.x, foca_n.y);
+        if (d < dist) { dist = d; posible_presa = foca_n; }
+    }
+
+    if (posible_presa != noone && dist < radio_deteccion) {
+        // Solo ataca si la foca está en el agua
+        if (tilemap_get_at_pixel(global.tilemap_nieve, posible_presa.x, posible_presa.y) == 0) {
+            estado = "PERSEGUIR";
+            objetivo = posible_presa;
+        }
+    }
+    
+    if (_dx != 0) image_xscale = sign(_dx);
+}
 
 // =========================================================
 //                  ESTADO 2: PERSEGUIR

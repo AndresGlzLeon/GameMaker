@@ -33,3 +33,7 @@ max_tiempo_agua = 600;  // Si en 10 seg no encuentra nada, vuelve a descansar
 estamina_max = 300;     // Dura 5 segundos corriendo (a 60 FPS)
 estamina = estamina_max; 
 cansada = false;        // Bandera para saber si ya se agotó
+
+// --- SISTEMA DE ENFERMEDAD ---
+tiempo_enfermedad = 0; // Contador: Si es > 0, está envenenado
+duracion_veneno = 1200; // 20 SEGUNDOS de enfermedad (60fps * 20)

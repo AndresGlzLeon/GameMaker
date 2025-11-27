@@ -94,4 +94,52 @@ for (var i = 0; i < 2; i++) {
             effect_create_above(ef_smoke, x, y, 0, c_white);
         }
     }
+	
+	// ... (El resto del código del mapa va arriba) ...
+
+// =========================================================
+//        5. RESCATE DE FOCAS (DESATASCADOR DE IGLÚS)
+// =========================================================
+
+var tipos = [Foca1, Foca2];
+
+for (var i = 0; i < 2; i++) {
+    
+    with (tipos[i]) {
+        
+        // 1. DETECTAR SI ME CONSTRUYERON ENCIMA
+        // instance_place me dice CUÁL iglú me está aplastando
+        var igloo_encima = instance_place(x, y, obj_Igloo);
+        
+        if (igloo_encima != noone) {
+            
+            // 2. CALCULAR RUTA DE ESCAPE
+            // Hacia el lado contrario del centro del iglú
+            var dir_escape = point_direction(igloo_encima.x, igloo_encima.y, x, y);
+            
+            // 3. EMPUJAR HASTA SALIR (Bucle while)
+            // "Mientras siga tocando el iglú, muéveme 5 pixeles más allá"
+            var seguridad = 0; // Para evitar bucles infinitos
+            
+            while (place_meeting(x, y, obj_Igloo) && seguridad < 50) {
+                x += lengthdir_x(10, dir_escape);
+                y += lengthdir_y(10, dir_escape);
+                seguridad++;
+            }
+            
+            // 4. SEGURIDAD: ¿ME EMPUJARON AL AGUA?
+            // Si después de salir del iglú caí al mar, corro al centro del mapa
+            if (tilemap_get_at_pixel(global.tilemap_nieve, x, y) == 0) {
+                var dir_centro = point_direction(x, y, room_width/2, room_height/2);
+                
+                // Salto grande hacia el centro para asegurar nieve
+                x += lengthdir_x(80, dir_centro);
+                y += lengthdir_y(80, dir_centro);
+            }
+            
+            // Efecto visual para confirmar que funcionó
+            effect_create_above(ef_cloud, x, y, 0, c_white);
+        }
+    }
+}
 }
