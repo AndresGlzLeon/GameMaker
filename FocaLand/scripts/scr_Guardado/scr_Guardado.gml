@@ -18,8 +18,11 @@ function guardar_partida_json() {
         ini_write_real("Economia", "CostoExpansion", costo_actual);
 
         // --- SECCIÓN C: POBLACIÓN ---
-        var total_focas = instance_number(Foca1) + instance_number(Foca2);
-        ini_write_real("Poblacion", "Focas", total_focas); 
+        // Contar focas vivas y muertas
+        var total_focas_vivas = instance_number(Foca1) + instance_number(Foca2);
+        var total_focas_muertas = variable_global_exists("focas_muertas") ? global.focas_muertas : 0;
+        ini_write_real("Poblacion", "Focas", total_focas_vivas);
+        ini_write_real("Poblacion", "FocasMuertas", total_focas_muertas);
         
         var total_peces = instance_number(Pez); 
         ini_write_real("Poblacion", "Peces", total_peces);
@@ -37,10 +40,10 @@ function guardar_partida_json() {
         // 3. Cerrar archivo
         ini_close();
 
-        show_debug_message("✓ GUARDADO EXITOSO - Dinero: " + string(global.pescado_capturado) + ", Focas: " + string(total_focas) + ", Orcas: " + string(total_orcas) + ", Nivel Isla: " + string(nivel_isla_actual));
+        show_debug_message("✓ GUARDADO EXITOSO - Dinero: " + string(global.pescado_capturado) + ", Focas Vivas: " + string(total_focas_vivas) + ", Focas Muertas: " + string(total_focas_muertas) + ", Orcas: " + string(total_orcas) + ", Nivel Isla: " + string(nivel_isla_actual));
         
         // Mostrar mensaje al usuario (sin pausar más)
-        show_message("¡PARTIDA GUARDADA!\n\nFocas: " + string(total_focas) + "\nPeces: " + string(total_peces) + "\nOrcas: " + string(total_orcas) + "\nDinero: " + string(global.pescado_capturado) + "\nNivel Isla: " + string(nivel_isla_actual));
+        show_message("¡PARTIDA GUARDADA!\n\nFocas Vivas: " + string(total_focas_vivas) + "\nFocas Muertas: " + string(total_focas_muertas) + "\nPeces: " + string(total_peces) + "\nOrcas: " + string(total_orcas) + "\nDinero: " + string(global.pescado_capturado) + "\nNivel Isla: " + string(nivel_isla_actual));
         
         // 4. Volver a congelar solo lo necesario (sin tocar HUD)
         instance_deactivate_all(true);
@@ -48,8 +51,8 @@ function guardar_partida_json() {
         if (instance_exists(obj_HUD_Entorno)) instance_activate_object(obj_HUD_Entorno);
         
     } catch (error) {
-        show_message("❌ ERROR AL GUARDAR:\n" + error.message);
-        show_debug_message("ERROR EN GUARDADO: " + error.message + " | Línea: " + string(error.line_number));
+        show_message("❌ ERROR AL GUARDAR:\n" + string(error));
+        show_debug_message("ERROR EN GUARDADO: " + string(error));
     }
 }
 
@@ -68,7 +71,8 @@ function cargar_partida_json() {
             global.costo_expansion = ini_read_real("Economia", "CostoExpansion", 100);
             
             // 3. CARGAR POBLACIÓN (Para los generadores)
-            global.focas_guardadas = ini_read_real("Poblacion", "Focas", 20); 
+            global.focas_guardadas = ini_read_real("Poblacion", "Focas", 20);
+            global.focas_muertas = ini_read_real("Poblacion", "FocasMuertas", 0);
             global.peces_guardados = ini_read_real("Poblacion", "Peces", 15);
             global.orcas_guardadas = ini_read_real("Poblacion", "Orcas", 1);
             
@@ -80,7 +84,7 @@ function cargar_partida_json() {
             
             ini_close();
             
-            show_debug_message("✓ CARGA EXITOSA - Dinero: " + string(global.pescado_capturado) + ", Focas: " + string(global.focas_guardadas) + ", Orcas: " + string(global.orcas_guardadas) + ", Nivel Isla: " + string(global.nivel_isla_guardado));
+            show_debug_message("✓ CARGA EXITOSA - Dinero: " + string(global.pescado_capturado) + ", Focas: " + string(global.focas_guardadas) + ", Focas Muertas: " + string(global.focas_muertas) + ", Orcas: " + string(global.orcas_guardadas) + ", Nivel Isla: " + string(global.nivel_isla_guardado));
             
             // 6. Ir al juego
             room_goto(R_Play);

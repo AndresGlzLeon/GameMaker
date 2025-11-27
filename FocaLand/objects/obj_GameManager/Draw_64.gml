@@ -190,10 +190,6 @@ if (menu_abierto) {
     draw_text_transformed(centro_x, centro_y + 20, "Listas", 0.7, 0.7, 0);
 }
 
-<<<<<<< HEAD
+
 // Reset final obligatorio
 draw_set_halign(fa_left); draw_set_valign(fa_top); draw_set_color(c_white); draw_set_alpha(1);
-=======
-// Reset final
-draw_set_halign(fa_left); draw_set_valign(fa_top); draw_set_color(c_white);
->>>>>>> 919b85eb9e1016afc663e980e13feeffc7bdc492

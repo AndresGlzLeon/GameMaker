@@ -18,6 +18,7 @@ if (!variable_global_exists("modo_carga")) {
 // SI NO ESTAMOS CARGANDO, INICIALIZAR EN 0
 if (!global.modo_carga) {
     global.pescado_capturado = 0;
+    global.focas_muertas = 0;
 }
 
 show_debug_message("🎮 GameManager Init | Modo Carga: " + string(global.modo_carga) + " | Dinero: " + string(global.pescado_capturado));
