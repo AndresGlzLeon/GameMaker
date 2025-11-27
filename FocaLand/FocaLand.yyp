@@ -79,8 +79,8 @@
   "resourceType":"GMProject",
   "resourceVersion":"2.0",
   "RoomOrderNodes":[
-    {"roomId":{"name":"R_Play","path":"rooms/R_Play/R_Play.yy",},},
     {"roomId":{"name":"rm_Menu","path":"rooms/rm_Menu/rm_Menu.yy",},},
+    {"roomId":{"name":"R_Play","path":"rooms/R_Play/R_Play.yy",},},
   ],
   "templateType":"game",
   "TextureGroups":[
