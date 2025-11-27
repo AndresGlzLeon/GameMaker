@@ -39,6 +39,7 @@
   "resources":[
     {"id":{"name":"fnt_Botones","path":"fonts/fnt_Botones/fnt_Botones.yy",},},
     {"id":{"name":"fnt_Titulo","path":"fonts/fnt_Titulo/fnt_Titulo.yy",},},
+    {"id":{"name":"Controlador_Contaminacion","path":"objects/Controlador_Contaminacion/Controlador_Contaminacion.yy",},},
     {"id":{"name":"Controlador_Focas","path":"objects/Controlador_Focas/Controlador_Focas.yy",},},
     {"id":{"name":"Controlador_Orcas","path":"objects/Controlador_Orcas/Controlador_Orcas.yy",},},
     {"id":{"name":"Controlador_Pez","path":"objects/Controlador_Pez/Controlador_Pez.yy",},},
@@ -53,6 +54,7 @@
     {"id":{"name":"obj_Sistema_Pausa","path":"objects/obj_Sistema_Pausa/obj_Sistema_Pausa.yy",},},
     {"id":{"name":"orca","path":"objects/orca/orca.yy",},},
     {"id":{"name":"Pez","path":"objects/Pez/Pez.yy",},},
+    {"id":{"name":"Pollution","path":"objects/Pollution/Pollution.yy",},},
     {"id":{"name":"ps_nieve","path":"particles/ps_nieve/ps_nieve.yy",},},
     {"id":{"name":"R_Play","path":"rooms/R_Play/R_Play.yy",},},
     {"id":{"name":"rm_Menu","path":"rooms/rm_Menu/rm_Menu.yy",},},
@@ -67,6 +69,7 @@
     {"id":{"name":"PezSprite","path":"sprites/PezSprite/PezSprite.yy",},},
     {"id":{"name":"Room_Play","path":"sprites/Room_Play/Room_Play.yy",},},
     {"id":{"name":"Snow","path":"sprites/Snow/Snow.yy",},},
+    {"id":{"name":"spr_Pollution","path":"sprites/spr_Pollution/spr_Pollution.yy",},},
     {"id":{"name":"TileSnow","path":"sprites/TileSnow/TileSnow.yy",},},
     {"id":{"name":"TileWater","path":"sprites/TileWater/TileWater.yy",},},
     {"id":{"name":"Water","path":"sprites/Water/Water.yy",},},
