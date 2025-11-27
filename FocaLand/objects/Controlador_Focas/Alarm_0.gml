@@ -1,6 +1,6 @@
 /// @description GENERAR MANADA
 
-var cantidad_focas = 10; // ¿Cuántas quieres?
+var cantidad_focas = 20; // ¿Cuántas quieres?
 var creadas = 0;
 var intentos = 0;
 

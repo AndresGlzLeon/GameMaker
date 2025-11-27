@@ -54,6 +54,7 @@
     {"id":{"name":"R_Play","path":"rooms/R_Play/R_Play.yy",},},
     {"id":{"name":"rm_Menu","path":"rooms/rm_Menu/rm_Menu.yy",},},
     {"id":{"name":"scr_GetTileIndex","path":"scripts/scr_GetTileIndex/scr_GetTileIndex.yy",},},
+    {"id":{"name":"scr_Guardado","path":"scripts/scr_Guardado/scr_Guardado.yy",},},
     {"id":{"name":"Foca1_L","path":"sprites/Foca1_L/Foca1_L.yy",},},
     {"id":{"name":"Foca1_R","path":"sprites/Foca1_R/Foca1_R.yy",},},
     {"id":{"name":"Foca2_L","path":"sprites/Foca2_L/Foca2_L.yy",},},
